@@ -162,9 +162,18 @@ class ApiService {
         if (data.containsKey('bilgiler') && data['bilgiler'] is Map) {
           final Map<String, dynamic> bilgiler = data['bilgiler'] as Map<String, dynamic>;
           
-          bilgiler.forEach((key, value) {
-            if (value is List) {
-              quickFacts.add(SubjectQuickFacts.fromJson(key, value));
+          bilgiler.forEach((subjectKey, value) {
+            if (value is List && value.isNotEmpty && value[0] is Map) {
+              final Map<String, dynamic> sectionsMap = value[0] as Map<String, dynamic>;
+              
+              List<dynamic> sectionsList = [];
+              sectionsMap.forEach((sectionKey, sectionValue) {
+                if (sectionValue is Map<String, dynamic>) {
+                  sectionsList.add(sectionValue);
+                }
+              });
+              
+              quickFacts.add(SubjectQuickFacts.fromJson(subjectKey, sectionsList));
             }
           });
         }
